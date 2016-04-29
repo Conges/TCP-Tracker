@@ -33,7 +33,10 @@ CONTROLLER_PORT = 7777
 
 
 def getCongestionDataFromFile():
-    return tuple(open(CONGESTION_DATA_FILE, "r"))
+    conges_file = open(CONGESTION_DATA_FILE, "r")
+    sessions = conges_file.readlines()
+    conges_file.close()
+    return sessions
 
 class CongesNotifyClient(LineReceiver):
     def __init__(self):
