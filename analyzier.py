@@ -104,25 +104,25 @@ class CongesAnalyzer:
             value = {packets_count: entry[1][packets_count], transfer_size: entry[1][transfer_size],
                      cong_percentage: t_cong_percentage, transfer_rate: t_transfer_rate}
             self.analyzer_map[key] = value
-        print(self.analyzer_map[key])
+        # print(self.analyzer_map[key])
 
 
 
 # test script
-entry = [("192.168.1.10", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 5], "transfer_size" : 100} ]
-c = CongesAnalyzer()
-c.add_entry(entry)
-entry = [("192.168.1.10", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 10], "transfer_size" : 300} ]
-c.add_entry(entry)
-
-entry = [("192.168.1.3", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 5], "transfer_size" : 100} ]
-c.add_entry(entry)
-
-entry = [("192.168.1.3", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 10], "transfer_size" : 300} ]
-c.add_entry(entry)
-entry = [("192.168.1.3", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 10], "transfer_size" : 300} ]
-c.add_entry(entry)
-entry = [("192.168.1.3", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 10], "transfer_size" : 300} ]
-c.add_entry(entry)
-entry = [("192.168.1.3", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 10], "transfer_size" : 300} ]
-c.add_entry(entry)
+# entry = [("192.168.1.10", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 5], "transfer_size" : 100} ]
+# c = CongesAnalyzer()
+# c.add_entry(entry)
+# entry = [("192.168.1.10", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 10], "transfer_size" : 300} ]
+# c.add_entry(entry)
+#
+# entry = [("192.168.1.3", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 5], "transfer_size" : 100} ]
+# c.add_entry(entry)
+#
+# entry = [("192.168.1.3", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 10], "transfer_size" : 300} ]
+# c.add_entry(entry)
+# entry = [("192.168.1.3", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 10], "transfer_size" : 300} ]
+# c.add_entry(entry)
+# entry = [("192.168.1.3", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 10], "transfer_size" : 300} ]
+# c.add_entry(entry)
+# entry = [("192.168.1.3", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 10], "transfer_size" : 300} ]
+# c.add_entry(entry)
