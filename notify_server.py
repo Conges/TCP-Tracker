@@ -17,18 +17,37 @@
 from twisted.internet.protocol import Protocol, Factory
 from twisted.internet import reactor
 
+from analyzier import CongesAnalyzer
+from parser import CongesParser
+from pprint import pprint
 
 CONTROLLER_PORT = 7777
 
 class CongesNotifyServer(Protocol):
+    def __init__(self):
+        self.parser = CongesParser()
+        self.analyzer = CongesAnalyzer()
+
     def dataReceived(self, data):
-        print(data)
+        sessions = self.parser.parse_chunck(data)
+        for i in range(len(sessions)):
+            # print sessions[i]
+            self.analyzer.add_entry(sessions[i])
+        self.factory.analyzer_map = self.analyzer.analyzer_map
+        pprint(self.factory.analyzer_map)
+
+class MyFactory(Factory):
+    def __init__(self):
+        self.analyzer_map = dict()
+
+
 
 def main():
-    f = Factory()
+    f = MyFactory()
     f.protocol = CongesNotifyServer
     reactor.listenTCP(CONTROLLER_PORT, f)
     reactor.run()
+    # print f.analyzer_map
 
 if __name__ == '__main__':
     main()
