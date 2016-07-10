@@ -103,7 +103,11 @@ class PCE:
                     print items
                     ret_val.append(items)
 
-            self.full_stacks[tmp3[-1]] = tmp3[1:-1]
+            tmp_stack = tmp3[1:-1]
+            for i in range(0,len(tmp_stack)):
+                tmp_stack[i] = self.id_to_label(tmp_stack[i])
+                # print(tmp_stack[i])
+            self.full_stacks[tmp3[-1]] = tmp_stack
         # print(self.full_stacks)
         # self.pce_timer = threading.Timer(NOTIFY_PERIOD, self.PCE_algo2, (a4_src, a5, g, d2, ))
         # self.pce_timer.start()
@@ -195,9 +199,13 @@ class PCE:
             return ip.split('.')[3]
         return ip.split('.')[3] + '.' + ip.split('.')[3] + '.' + ip.split('.')[3] + '.' + ip.split('.')[3]
 
+
     def host_id_to_ip(self, id):
         ip = "192.168." + self.sdn_network + "." + id
         return ip
+
+    def id_to_label(self,id):
+        return id+id+id
 
 
 
