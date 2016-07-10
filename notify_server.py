@@ -19,6 +19,7 @@ from twisted.internet import reactor
 
 from analyzier import CongesAnalyzer
 from parser import CongesParser
+from PCE_2 import PCE
 from pprint import pprint
 
 CONTROLLER_PORT = 7777
@@ -27,19 +28,36 @@ class CongesNotifyServer(Protocol):
     def __init__(self):
         self.parser = CongesParser()
         self.analyzer = CongesAnalyzer()
+        self.PCE = PCE()
+
+
+    def send_stacks(self, stacks):
+        print "print send stacks"
+        for key, value in stacks.iteritems():
+            line = key + ":" + str(value)+"\n"
+            print(line)
+            self.transport.write(line)
+
 
     def dataReceived(self, data):
         sessions = self.parser.parse_chunck(data)
         for i in range(len(sessions)):
             # print sessions[i]
             self.analyzer.add_entry(sessions[i])
-        self.factory.analyzer_map = self.analyzer.analyzer_map
-        pprint(self.factory.analyzer_map)
+
+        self.factory.analyzer_map.update( self.analyzer.analyzer_map)
+        full_stacks = self.factory.PCE.PCE_algo2(self.analyzer.analyzer_map)
+
+        self.send_stacks(full_stacks)
+
+        # print(full_stacks)
+        # pprint(self.factory.analyzer_map)
 
 class MyFactory(Factory):
     def __init__(self):
         self.analyzer_map = dict()
-
+        self.PCE = PCE()
+        self.PCE.pce_start()
 
 
 def main():
