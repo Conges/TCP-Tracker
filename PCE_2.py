@@ -17,6 +17,8 @@ class PCE:
         self.sdn_network = 77
         self.full_stacks = dict()
         self.CONGESTON_LIMIT = 90
+        self.d2 = defaultdict(list)
+        self.d6 = dict()  # Contains average percentage for all links
 
 
     def fake_analyzer_map(self):
@@ -38,9 +40,11 @@ class PCE:
         # TODO work on real congestion data
         self.fake_analyzer_map()
 
+
         # f4 = open('test_congestion_2','r')
         a4 = []
         d4 = dict()
+
         for key, value in self.analyzer_map.iteritems():
             t4 = (self.ip_to_id(key[0]), self.ip_to_id(key[1]))
             # print(t4)
@@ -53,6 +57,19 @@ class PCE:
                 print "There is a congestion between ", str(key)
                 a4.append(t4)
 
+
+        for tup in self.a1:
+            # print tup
+            # print self.d2[tup]
+            z = 0.0
+            for k in self.d2[tup]:
+                x = 0.0
+                if(d4.has_key(k)):
+                    x = float(d4[k][1])
+                    z += x
+            self.d6[tup] = z / self.d1[tup]
+        print self.d6
+
         # Accumulating all the ratio*rate between all sources and destinations for all links
         for tup in a4:
             g2 = copy.deepcopy(self.g)
@@ -61,9 +78,10 @@ class PCE:
             a6 = []
             for k in range (1,len(tmp2)-2):
                 t3 = (tmp2[k],tmp2[k+1])
-                # print d2[t3]
+                # print self.d2[t3],'d2'
                 a5=[]
                 y = 0.0
+
                 for j in self.d2[t3]:
                     x = 0
                     if(d4.has_key(j)):
@@ -133,7 +151,6 @@ class PCE:
         # d4 = {}  # Mapping all sources and destinations to their ratios and rates
         a5 = []  # Accumulating all the ratio*rate between all sources and destinations for all links
 
-
         # Add all edges to the graph
         for line in f1:
             l = line.split()
@@ -150,11 +167,10 @@ class PCE:
                 l[1] = l[1][0]
             g.add_edge(l[0],l[1])
 
-
         # Get all shortest paths from all nodes to all destinations
         for n in g.nodes:
             for node in g.nodes:
-                if node[0] == 'h' and n[0] == 'h':
+                if len(node) == 3 and len(n) == 3:
                     if n != node:
                         l,path = g.shortest_path(n,node)
                         # print>>f2, path
@@ -184,12 +200,12 @@ class PCE:
             d1[k] += 1
         for t21,t22,t23,t24 in a2:
             d2[(t21,t22)].append((t23,t24))
-        # print d2
 
-        # reading all congestion states and finds if there any ration above 90
+        self.a1 = a1
         self.a4 = a4
         self.g = g
         self.d2 = d2
+        self.d1 = d1
 
         # self.PCE_algo2(a4, a5, g, d2)
 
