@@ -30,7 +30,7 @@ CONGESTION_DATA_FILE = "/proc/net/tcp"
 # CONGESTION_DATA_FILE = "/proc/monitor_congestion"
 CONTROLLER_IP = "localhost"
 CONTROLLER_PORT = 7777
-
+INJECT_LABELS_FILE = "/proc/inject_labels"
 
 def getCongestionDataFromFile():
     conges_file = open(CONGESTION_DATA_FILE, "r")
@@ -60,6 +60,9 @@ class CongesNotifyClient(LineReceiver):
         self.timer.start()
 
 
+    def dataReceived(self, data):
+        print(data)
+        # TODO write data in INJECT_LABELS_FILE
 
 
 
