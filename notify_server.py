@@ -29,7 +29,7 @@ class CongesNotifyServer(Protocol):
         self.parser = CongesParser()
         self.analyzer = CongesAnalyzer()
         self.PCE = PCE()
-
+        self.sr_enable = False
 
     def send_stacks(self, stacks):
         print "print send stacks"
@@ -46,11 +46,21 @@ class CongesNotifyServer(Protocol):
             self.analyzer.add_entry(sessions[i])
 
         self.factory.analyzer_map.update( self.analyzer.analyzer_map)
-        full_stacks = self.factory.PCE.PCE_algo2(self.analyzer.analyzer_map)
 
-        self.send_stacks(full_stacks)
+        # check if we enable segment routing
+        with open('sr_enable.in') as sr_file:
+            x = sr_file.readline()
+            if int(x) == 1:
+                self.sr_enable = True
+            else:
+                self.sr_enable = False
 
-        # print(full_stacks)
+        if self.sr_enable:
+            full_stacks = self.factory.PCE.PCE_algo2(self.analyzer.analyzer_map)
+            self.send_stacks(full_stacks)
+
+            # print(full_stacks)
+
         # pprint(self.factory.analyzer_map)
 
 class MyFactory(Factory):
