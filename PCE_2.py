@@ -2,6 +2,7 @@ from collections import defaultdict, deque
 import copy
 import threading
 from our_graph import Graph
+from gui_supply import GUISupply
 
 NOTIFY_PERIOD = 3.0
 packets_count = "packets_count"
@@ -18,7 +19,8 @@ class PCE:
         self.full_stacks = dict()
         self.CONGESTON_LIMIT = 90
         self.d2 = defaultdict(list)
-        self.d6 = dict()  # Contains average percentage for all links
+        self.links_avg_cong = dict()  # Contains average percentage for all links
+        self.gui_supply = GUISupply()
 
 
     def fake_analyzer_map(self):
@@ -67,9 +69,11 @@ class PCE:
                 if(d4.has_key(k)):
                     x = float(d4[k][1])
                     z += x
-            self.d6[tup] = z / self.d1[tup]
-        print self.d6
+            self.links_avg_cong[tup] = z / self.d1[tup]
+        # print self.links_avg_cong
 
+        self.gui_supply.print_topology(self.links_avg_cong)
+        # return
         # Accumulating all the ratio*rate between all sources and destinations for all links
         for tup in a4:
             g2 = copy.deepcopy(self.g)
