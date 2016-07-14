@@ -20,6 +20,7 @@ from twisted.internet import reactor
 from analyzier import CongesAnalyzer
 from parser import CongesParser
 from PCE_2 import PCE
+from gui_supply import GUISupply
 from pprint import pprint
 
 CONTROLLER_PORT = 7777
@@ -28,11 +29,9 @@ class CongesNotifyServer(Protocol):
     def __init__(self):
         self.parser = CongesParser()
         self.analyzer = CongesAnalyzer()
-        self.PCE = PCE()
         self.sr_enable = False
 
     def send_stacks(self, stacks):
-        print "print send stacks"
         for key, value in stacks.iteritems():
             line = key + ":" + str(value)+"\n"
             print(line)
@@ -53,6 +52,7 @@ class CongesNotifyServer(Protocol):
             if int(x) == 1:
                 self.sr_enable = True
             else:
+                print "SR not enabled"
                 self.sr_enable = False
 
         if self.sr_enable:
@@ -61,12 +61,16 @@ class CongesNotifyServer(Protocol):
 
             # print(full_stacks)
 
+        # Update session in GUI
+        print("in server start update session in GUI")
+        self.factory.gui_supply.update_sessions(self.factory.analyzer_map)
         # pprint(self.factory.analyzer_map)
 
 class MyFactory(Factory):
     def __init__(self):
         self.analyzer_map = dict()
-        self.PCE = PCE()
+        self.gui_supply = GUISupply()
+        self.PCE = PCE(self.gui_supply)
         self.PCE.pce_start()
 
 

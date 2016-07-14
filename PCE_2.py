@@ -2,7 +2,6 @@ from collections import defaultdict, deque
 import copy
 import threading
 from our_graph import Graph
-from gui_supply import GUISupply
 
 NOTIFY_PERIOD = 3.0
 packets_count = "packets_count"
@@ -12,15 +11,15 @@ transfer_rate = "transfer_rate"
 
 
 class PCE:
-    def __init__(self):
+    def __init__(self, gui_supply):
         self.pce_timer = object()
         self.analyzer_map = dict()
         self.sdn_network = 77
         self.full_stacks = dict()
-        self.CONGESTON_LIMIT = 90
+        self.CONGESTION_LIMIT = 90
         self.d2 = defaultdict(list)
         self.links_avg_cong = dict()  # Contains average percentage for all links
-        self.gui_supply = GUISupply()
+        self.gui_supply = gui_supply
 
 
     def fake_analyzer_map(self):
@@ -36,8 +35,8 @@ class PCE:
 
 
     def PCE_algo2(self,  _analyzer_map):
-        print "in pce algo 2"
-        self.analyzer_map = _analyzer_map
+        # print "in pce algo 2"
+        self.analyzer_map = copy.deepcopy(_analyzer_map)
 
         # TODO work on real congestion data
         self.fake_analyzer_map()
@@ -55,7 +54,7 @@ class PCE:
             ratio = int(value[cong_percentage])
             d4[t4] = (rate,ratio)
             # print(d4[t4])
-            if int(ratio) > self.CONGESTON_LIMIT:
+            if int(ratio) > self.CONGESTION_LIMIT:
                 print "There is a congestion between ", str(key)
                 a4.append(t4)
 
@@ -69,10 +68,13 @@ class PCE:
                 if(d4.has_key(k)):
                     x = float(d4[k][1])
                     z += x
+            # TODO: make it return congestion = sum(congestion*rate) / sum(rate)
+            # TODO: rate in MB with two decimal point
             self.links_avg_cong[tup] = z / self.d1[tup]
         # print self.links_avg_cong
 
-        self.gui_supply.print_topology(self.links_avg_cong)
+
+        self.gui_supply.update_links(self.links_avg_cong)
         # return
         # Accumulating all the ratio*rate between all sources and destinations for all links
         for tup in a4:
@@ -137,7 +139,7 @@ class PCE:
 
 
     def pce_start(self,):
-        print("in PCE start")
+        # print("in PCE start")
         g = Graph()
 
         #input files
