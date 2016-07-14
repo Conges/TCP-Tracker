@@ -12,7 +12,8 @@
 
 PACKET_COUNT = "packets_count"
 TRANSFER_SIZE = "transfer_size"
-
+SENDER_PORT = "sport"
+DEST_PORT = "dport"
 
 NUMBER_OF_SPACES = 13;
 
@@ -27,11 +28,15 @@ class CongesParser:
     def parse_line (self, line):
         arr = line.split(' ');
         senderIP = arr[1].split(':')[0]
+        senderPort  = arr[1].split(':')[1]
+
         receiverIP = arr[3].split(':')[0]
+        receiverPort = arr[3].split(':')[1]
+
         t_packets_count = arr[5:10]
         t_packets_count = [int(x) for x in t_packets_count]
         t_transfer_size = int(arr[-1])
-        ret = [(senderIP, receiverIP) , {PACKET_COUNT: t_packets_count, TRANSFER_SIZE: t_transfer_size}]
+        ret = [(senderIP, receiverIP) , {PACKET_COUNT: t_packets_count, TRANSFER_SIZE: t_transfer_size, SENDER_PORT: senderPort, DEST_PORT: receiverPort}]
         return ret;
 
     def parse_chunck(self, chunck):

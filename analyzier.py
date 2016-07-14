@@ -19,6 +19,9 @@ packets_count = "packets_count"
 transfer_size = "transfer_size"
 cong_percentage = "cong_percentage"
 transfer_rate = "transfer_rate"
+SENDER_PORT = "sport"
+DEST_PORT = "dport"
+
 NOTIFY_PERIOD = 2.0
 
 
@@ -61,6 +64,7 @@ class CongesAnalyzer:
 
         :return:
         """
+        # print("in add entry")
         key = entry[0]
 
         if self.analyzer_map.has_key(key):
@@ -92,23 +96,24 @@ class CongesAnalyzer:
             t_transfer_rate = take_average(t_transfer_rate, current_value[transfer_rate])
 
             value = {packets_count: entry[1][packets_count], transfer_size: entry[1][transfer_size],
-                     cong_percentage: t_cong_percentage, transfer_rate: t_transfer_rate}
+                     cong_percentage: t_cong_percentage, transfer_rate: t_transfer_rate,
+                     SENDER_PORT: entry[1][SENDER_PORT], DEST_PORT: entry[1][DEST_PORT]}
 
             self.analyzer_map[key] = value
-
         else:
             # print("first time")
             t_cong_percentage = self.calc_congestion_percentage(entry[1][packets_count])
             t_transfer_rate = entry[1][transfer_size] / NOTIFY_PERIOD
 
             value = {packets_count: entry[1][packets_count], transfer_size: entry[1][transfer_size],
-                     cong_percentage: t_cong_percentage, transfer_rate: t_transfer_rate}
+                     cong_percentage: t_cong_percentage, transfer_rate: t_transfer_rate,
+                     SENDER_PORT: entry[1][SENDER_PORT], DEST_PORT: entry[1][DEST_PORT]}
             self.analyzer_map[key] = value
-        # print(self.analyzer_map[key])
-
-
+            # print(self.analyzer_map[key])
+        # print("in anaylizer", self.analyzer_map[key])
 
 # test script
+
 # entry = [("192.168.1.10", "192.168.1.4"), {"packets_count": [0, 0, 0, 5, 5], "transfer_size" : 100} ]
 # c = CongesAnalyzer()
 # c.add_entry(entry)
