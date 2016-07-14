@@ -16,7 +16,7 @@ class PCE:
         self.analyzer_map = dict()
         self.sdn_network = 77
         self.full_stacks = dict()
-        self.CONGESTION_LIMIT = 90
+        self.CONGESTION_LIMIT = 60
         self.d2 = defaultdict(list)
         self.links_avg_cong = dict()  # Contains average percentage for all links
         self.gui_supply = gui_supply
@@ -63,14 +63,18 @@ class PCE:
             # print tup
             # print self.d2[tup]
             z = 0.0
+            all_rate = 0.0
             for k in self.d2[tup]:
                 x = 0.0
                 if(d4.has_key(k)):
-                    x = float(d4[k][1])
+                    x = float(d4[k][0]) * float(d4[k][1]) / 100
                     z += x
+                    all_rate += float(d4[k][0])
+
             # TODO: make it return congestion = sum(congestion*rate) / sum(rate)
-            # TODO: rate in MB with two decimal point
-            self.links_avg_cong[tup] = z / self.d1[tup]
+            self.links_avg_cong[tup] = 0
+            if all_rate != 0:
+                self.links_avg_cong[tup] = (z / all_rate) * 100
         # print self.links_avg_cong
 
 
