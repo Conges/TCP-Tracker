@@ -71,7 +71,6 @@ class PCE:
                     z += x
                     all_rate += float(d4[k][0])
 
-            # TODO: make it return congestion = sum(congestion*rate) / sum(rate)
             self.links_avg_cong[tup] = 0
             if all_rate != 0:
                 self.links_avg_cong[tup] = (z / all_rate) * 100
@@ -147,10 +146,11 @@ class PCE:
         g = Graph()
 
         #input files
-        f1 = open('test_graph','r')
+        # f1 = open('test_graph','r')
+        f1 = open('graph.txt','r')
         f2 = open('shortest_paths','w')
         f3 = open('links','w')
-        f5 = open('modified_paths','w')
+        # f5 = open('modified_paths','w')
 
         # Declarations of arrays and dictionaries
         a1 = []  # Contains tuples of all edges
@@ -164,6 +164,8 @@ class PCE:
         # Add all edges to the graph
         for line in f1:
             l = line.split()
+            src = l[0].split('.')
+            dst = l[1].split('.')
             #for hosts h0-h7
             # if l[0][0] == 'h':
             #     g.add_edge(l[0],l[1][0])
@@ -171,11 +173,18 @@ class PCE:
             #     g.add_edge(l[0][0],l[1])
             # #for routers in the middle
             # else:
-            if l[0].find('.') != -1:
-                l[0] = l[0][0]
-            if l[1].find('.') != -1:
-                l[1] = l[1][0]
-            g.add_edge(l[0],l[1])
+            # if l[0].find('.') != -1:
+            #     l[0] = l[0][0]
+            # if l[1].find('.') != -1:
+            #     l[1] = l[1][0]
+
+            if int(src[3]) > 100:
+                src[0] = src[3]
+
+            if int(dst[3]) > 100:
+                dst[0] = dst[3]
+            g.add_edge(src[0], dst[0])
+            g.add_edge(dst[0], src[0])
 
         # Get all shortest paths from all nodes to all destinations
         for n in g.nodes:

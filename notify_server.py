@@ -23,7 +23,7 @@ from PCE_2 import PCE
 from gui_supply import GUISupply
 from pprint import pprint
 
-CONTROLLER_PORT = 7777
+CONTROLLER_PORT = 8888
 REROUTE = "rerouted"
 
 class CongesNotifyServer(Protocol):
@@ -79,12 +79,15 @@ class CongesNotifyServer(Protocol):
         # Update session in GUI
         # print("in server start update session in GUI")
         self.factory.gui_supply.update_sessions(self.factory.analyzer_map)
+        self.factory.gui_supply.update_nodes()
+        self.factory.gui_supply.release_topology()
         # pprint(self.factory.analyzer_map)
 
 class MyFactory(Factory):
     def __init__(self):
         self.analyzer_map = dict()
         self.gui_supply = GUISupply()
+        self.gui_supply.update_nodes()
         self.PCE = PCE(self.gui_supply)
         self.PCE.pce_start()
 

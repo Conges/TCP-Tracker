@@ -29,7 +29,7 @@ NOTIFY_PERIOD = 3.0
 CONGESTION_DATA_FILE = "fake_monitor.in"
 # CONGESTION_DATA_FILE = "/proc/monitor_congestion"
 CONTROLLER_IP = "localhost"
-CONTROLLER_PORT = 7777
+CONTROLLER_PORT = 8888
 INJECT_LABELS_FILE = "/proc/inject_labels"
 
 def getCongestionDataFromFile():
