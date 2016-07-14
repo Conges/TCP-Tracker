@@ -14,6 +14,7 @@ SENDER_PORT = "sport"
 DEST_PORT = "dport"
 SESSIONS = "sessions"
 ALL_CONG = "overall_congestion"
+REROUTE = "rerouted"
 
 
 class GUISupply:
@@ -49,7 +50,6 @@ class GUISupply:
         for key, value in analyzer_map.iteritems():
             # print "anaylyzer map value\n", value
             session = dict()
-            {"congestion": 20, "rate": "12 MB/s", "rerouted": "Yes"},
             session["source_ip"] = key[0]
             session["destination_ip"] = key[1]
             session["source_port"] = value[SENDER_PORT]
@@ -64,12 +64,18 @@ class GUISupply:
             s_rate_cong += (value[transfer_rate] * value[cong_percentage]) / 100
             session["rate"] = rate
 
+            session[REROUTE] = value[REROUTE]
+
             self.topology[SESSIONS].append(session)
 
-            # TODO
-            # session["rerouted"] = value[DEST_PORT]
+        # Sort sessions
+        self.topology[SESSIONS] = sorted(self.topology[SESSIONS], reverse=True,
+                                         key=lambda k: float(k['rate'].split()[0]) * int(k["congestion"]))
+        # pprint(self.topology[SESSIONS])
 
-        all_cong_indicator = s_rate_cong / all_rate
+        all_cong_indicator = 0
+        if all_rate != 0:
+            all_cong_indicator = s_rate_cong / all_rate
         self.topology[ALL_CONG] = str(decimal.Decimal(all_cong_indicator).quantize(SIXPLACES))
         #print(s_rate_cong , all_rate)
         #pprint(self.topology[ALL_CONG])

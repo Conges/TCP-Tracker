@@ -39,7 +39,7 @@ class PCE:
         self.analyzer_map = copy.deepcopy(_analyzer_map)
 
         # TODO work on real congestion data
-        self.fake_analyzer_map()
+        # self.fake_analyzer_map()
 
 
         # f4 = open('test_congestion_2','r')

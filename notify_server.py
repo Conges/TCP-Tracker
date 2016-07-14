@@ -24,6 +24,7 @@ from gui_supply import GUISupply
 from pprint import pprint
 
 CONTROLLER_PORT = 7777
+REROUTE = "rerouted"
 
 class CongesNotifyServer(Protocol):
     def __init__(self):
@@ -39,9 +40,11 @@ class CongesNotifyServer(Protocol):
 
 
     def dataReceived(self, data):
+        # print("data", data)
         sessions = self.parser.parse_chunck(data)
+        # print "sessions" , sessions
         for i in range(len(sessions)):
-            # print sessions[i]
+            # print "session[i]", sessions[i]
             self.analyzer.add_entry(sessions[i])
 
         self.factory.analyzer_map.update( self.analyzer.analyzer_map)
@@ -55,14 +58,26 @@ class CongesNotifyServer(Protocol):
                 print "SR not enabled"
                 self.sr_enable = False
 
+        full_stacks = []
         if self.sr_enable:
-            full_stacks = self.factory.PCE.PCE_algo2(self.analyzer.analyzer_map)
+            full_stacks = self.factory.PCE.PCE_algo2(self.factory.analyzer_map)
             self.send_stacks(full_stacks)
 
-            # print(full_stacks)
+            # print("fullstack", full_stacks)
+
+        # see which sessions is rerouted
+        for key, value in self.analyzer.analyzer_map.iteritems():
+            self.analyzer.analyzer_map[key][REROUTE] = "No"
+            dest_id = key[1].split('.')[3]
+            # print("dest_ip", dest_id)
+            if full_stacks.has_key(dest_id):
+                self.analyzer.analyzer_map[key][REROUTE] = "Yes"
+
+        self.factory.analyzer_map.update( self.analyzer.analyzer_map)
+        # print("factory map", self.factory.analyzer_map)
 
         # Update session in GUI
-        print("in server start update session in GUI")
+        # print("in server start update session in GUI")
         self.factory.gui_supply.update_sessions(self.factory.analyzer_map)
         # pprint(self.factory.analyzer_map)
 

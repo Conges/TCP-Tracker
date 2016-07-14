@@ -41,9 +41,12 @@ class CongesParser:
 
     def parse_chunck(self, chunck):
         lines = chunck.splitlines()
+        # print("lines", lines)
         ret = []
         for line in lines:
+            # print line.rstrip().split(' ')
             if self.is_valed_line(line):
+                # print("is valid line")
                 ret.append(self.parse_line(line))
         return ret
 
