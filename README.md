@@ -8,6 +8,7 @@ This module is responsible for three main tasks:
 * Update GUI with new data.
 
 <img src="https://raw.githubusercontent.com/Conges/TCP-Tracker/master/images/module-design.png" alt="Drawing" style="width: 250px;"/>
+
 ## by : 
 * Ahmed Kamal
 * Abdelrhman Hassan
